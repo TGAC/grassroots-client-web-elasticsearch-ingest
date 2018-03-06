@@ -112,7 +112,6 @@
 
     function submit_burkhard() {
         var url = $('#server_url').val();
-        var obj_prefix = "under_license/toronto/Wulff_2018-01-31_OWWC/";
         var collection_list = [];
         var jsonArray = $.parseJSON($('#json_values').val());
 
@@ -120,17 +119,16 @@
             // Save it!
             for (var i = 0; i < jsonArray.length; i++) {
                 if (jsonArray[i]['File'] != undefined) {
-                    var object = obj_prefix + jsonArray[i]['File'];
+                    var filedir = jsonArray[i]['File'].split('/');
+                    var object = filedir[1];
                     var accession = jsonArray[i]['Accession'];
-                    delete jsonArray[i]['File'];
-                    send_whole_jsonObj(url, object, jsonArray[i]);
+                    send_request(url, object, JSON.stringify(jsonArray[i]));
 
                     //process collecion
                     if ($.inArray(accession, collection_list) < 0) {
                         collection_list.push(accession);
-                        // delete jsonArray[i]['Accession'];
-                        object = obj_prefix + accession;
-                        send_whole_jsonObj(url, object, jsonArray[i]);
+                        object = accession;
+                        send_request(url, object, JSON.stringify(jsonArray[i]));
                     }
                 }
             }
